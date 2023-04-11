@@ -119,7 +119,7 @@ def get_statement_tokens(input_string):
 
 
 
- def get_parsed_statements(statements):
+def get_parsed_statements(statements):
     parsed_statements = []
     for line , statement in enumerate(statements):
         # remove white spaces
