@@ -1,4 +1,4 @@
-from utils import get_parsed_statements
+from utils import parse_program,evaluate_program
 
 def top_level_parser():
     lines = []
@@ -14,9 +14,9 @@ def top_level_parser():
 
 def main():
     statements = top_level_parser()
-    parsed_statements = get_parsed_statements(statements)     
-    for parsed_statement in parsed_statements:
-        print(parsed_statement)
+    parsed_statements = parse_program(statements)
+    evaluate_program(parsed_statements)
+    return
 
 if __name__=="__main__":
     main()
