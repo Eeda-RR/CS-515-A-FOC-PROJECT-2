@@ -303,6 +303,8 @@ def evaluate_expression(expression, variables_map) :
               variables_map[curr_token.val] = float(0.0)
             operator_stack.append(curr_token)
         elif curr_token.val in ('+', '-', '*', '/', '%', '^'):
+            if len(operator_stack) < 2:
+                raise_parse_error()
             right_operand = operator_stack.pop()
             left_operand = operator_stack.pop()
             result = evaluate_binary_operation(left_operand, right_operand, curr_token,variables_map)
@@ -312,10 +314,9 @@ def evaluate_expression(expression, variables_map) :
             result = evaluate_unary_operation(operand, curr_token, variables_map)
             operator_stack.append(token("val",result))
         elif curr_token.val in ('++', '--'):
-            # if not( is_variable(expression[i-1]) or is_variable(expression[i+1])):
-            #     raise ValueError('Operator {} not followed or prefixed by variable'.format(token))
-            #post inc/ dec
             operand = operator_stack.pop()
+            if operand.typ != "var":
+                raise_parse_error()
             operator_stack.append(token("val",variables_map[operand.val]))
             result = evaluate_unary_operation(operand, curr_token,variables_map)
             variables_map[operand.val] = result
@@ -327,9 +328,11 @@ def evaluate_expression(expression, variables_map) :
 
         elif curr_token.val == '=':
             if len(operator_stack) < 2:
-                raise ValueError('Not enough operands for operator {}'.format(curr_token))
+                raise_parse_error()
             right_operand = operator_stack.pop()
             left_operand = operator_stack.pop()
+            if left_operand.typ != "var":
+                raise_parse_error()
             if right_operand.typ == "var":
                 result = variables_map[right_operand.val]
             else:
@@ -337,9 +340,9 @@ def evaluate_expression(expression, variables_map) :
             variables_map[left_operand.val] = result
             operator_stack.append(token("val",result))
         else:
-            raise ValueError('Invalid token: {}'.format(curr_token))
+            raise_parse_error()
     if len(operator_stack) != 1:
-        raise ValueError('Invalid expression: {}'.format(expression))
+        raise raise_parse_error()
     if operator_stack[0].typ == "var":
         return variables_map[operator_stack[0].val], variables_map
     return operator_stack[0].val, variables_map
