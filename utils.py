@@ -293,57 +293,60 @@ def infix_to_postfix(tokens) :
     return postfix
 
 def evaluate_expression(expression, variables_map) :
-    operator_stack = []
-    for i, curr_token in enumerate(expression):
-        if curr_token.typ == "val":
-            operator_stack.append(curr_token)
-        elif curr_token.typ == "var":
-            if curr_token.val not in variables_map:
-              variables_map[curr_token.val] = float(0.0)
-            operator_stack.append(curr_token)
-        elif curr_token.val in ('+', '-', '*', '/', '%', '^'):
-            if len(operator_stack) < 2:
-                raise_parse_error()
-            right_operand = operator_stack.pop()
-            left_operand = operator_stack.pop()
-            result = evaluate_binary_operation(left_operand, right_operand, curr_token,variables_map)
-            operator_stack.append(token("val",result))
-        elif curr_token.val == "unary-":
-            if len(operator_stack) < 1:
-                raise_parse_error()
-            operand = operator_stack.pop()
-            result = evaluate_unary_operation(operand, curr_token, variables_map)
-            operator_stack.append(token("val",result))
-        elif curr_token.val in ('++', '--'):
-            if len(operator_stack) < 1 or operator_stack[-1].typ != "var":
-                raise_parse_error()
-            operand = operator_stack.pop()
-            result = evaluate_unary_operation(operand, curr_token,variables_map)
-            if curr_token.typ == "POST":
-                operator_stack.append(token("val",variables_map[operand.val]))
-            else:
+    try:
+        operator_stack = []
+        for i, curr_token in enumerate(expression):
+            if curr_token.typ == "val":
+                operator_stack.append(curr_token)
+            elif curr_token.typ == "var":
+                if curr_token.val not in variables_map:
+                variables_map[curr_token.val] = float(0.0)
+                operator_stack.append(curr_token)
+            elif curr_token.val in ('+', '-', '*', '/', '%', '^'):
+                if len(operator_stack) < 2:
+                    raise_parse_error()
+                right_operand = operator_stack.pop()
+                left_operand = operator_stack.pop()
+                result = evaluate_binary_operation(left_operand, right_operand, curr_token,variables_map)
                 operator_stack.append(token("val",result))
-            variables_map[operand.val] = result
-        elif curr_token.val == '=':
-            if len(operator_stack) < 2:
-                raise_parse_error()
-            right_operand = operator_stack.pop()
-            left_operand = operator_stack.pop()
-            if left_operand.typ != "var":
-                raise_parse_error()
+            elif curr_token.val == "unary-":
+                if len(operator_stack) < 1:
+                    raise_parse_error()
+                operand = operator_stack.pop()
+                result = evaluate_unary_operation(operand, curr_token, variables_map)
+                operator_stack.append(token("val",result))
+            elif curr_token.val in ('++', '--'):
+                if len(operator_stack) < 1 or operator_stack[-1].typ != "var":
+                    raise_parse_error()
+                operand = operator_stack.pop()
+                result = evaluate_unary_operation(operand, curr_token,variables_map)
+                if curr_token.typ == "POST":
+                    operator_stack.append(token("val",variables_map[operand.val]))
+                else:
+                    operator_stack.append(token("val",result))
+                variables_map[operand.val] = result
+            elif curr_token.val == '=':
+                if len(operator_stack) < 2:
+                    raise_parse_error()
+                right_operand = operator_stack.pop()
+                left_operand = operator_stack.pop()
+                if left_operand.typ != "var":
+                    raise_parse_error()
 
-            if right_operand.typ == "var":
-                variables_map[left_operand.val] = variables_map[right_operand.val]
+                if right_operand.typ == "var":
+                    variables_map[left_operand.val] = variables_map[right_operand.val]
+                else:
+                    variables_map[left_operand.val] = right_operand.val
+                operator_stack.append(right_operand)
             else:
-                variables_map[left_operand.val] = right_operand.val
-            operator_stack.append(right_operand)
-        else:
+                raise_parse_error()
+        if len(operator_stack) != 1:
             raise_parse_error()
-    if len(operator_stack) != 1:
-        raise_parse_error()
-    if operator_stack[0].typ == "var":
-        return variables_map.get(operator_stack[0].val, float(0.0)), variables_map
-    return operator_stack[0].val, variables_map
+        if operator_stack[0].typ == "var":
+            return variables_map.get(operator_stack[0].val, float(0.0)), variables_map
+        return operator_stack[0].val, variables_map
+    except ZeroDivisionError:
+        return "divide by zero" , variables_map
 
 def evaluate_binary_operation(left_operand, right_operand, operator,variables_map) -> float:
     left_value = left_operand.val
