@@ -214,9 +214,7 @@ def handle_unary_negation(tokens, operators):
     for i, curr_token in enumerate(tokens):
         if curr_token.typ == "sym" and curr_token.val == "-":
             if i == 0 or tokens[i-1].val == "(" or (tokens[i-1].val in operators and tokens[i-1].val not in ["++","--"]):
-                tokens.insert(i,token("sym", "("))
-                tokens.insert(i + 1, token("val", float(0.0)))
-                tokens.insert(i + 4, token("sym", ")"))
+                tokens[i] = token("sym", "unary-")
     return tokens
 
 
@@ -307,7 +305,10 @@ def evaluate_expression(expression, variables_map) :
             left_operand = operator_stack.pop()
             result = evaluate_binary_operation(left_operand, right_operand, curr_token,variables_map)
             operator_stack.append(token("val",result))
-
+        elif curr_token.val == "unary-":
+            operand = operator_stack.pop()
+            result = evaluate_unary_operation(operand, curr_token, variables_map)
+            operator_stack.append(token("val",result))
         elif curr_token.val in ('++', '--'):
             # if not( is_variable(expression[i-1]) or is_variable(expression[i+1])):
             #     raise ValueError('Operator {} not followed or prefixed by variable'.format(token))
@@ -372,5 +373,7 @@ def evaluate_unary_operation(operand, operator,variables_map) -> float:
         return value + 1
     elif operator.val == '--':
         return value - 1
+    elif operator.val == 'unary-':
+        return  (-1)*value
     else:
         raise ValueError('Invalid operator: {}'.format(operator))
