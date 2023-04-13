@@ -58,8 +58,8 @@ def lex(input_string):
             while curr_index < len(input_string) and (input_string[curr_index].isalnum() or input_string[curr_index] == "_"):
                 variable += input_string[curr_index]
                 curr_index += 1
-            if variable in ["true", "false"]:
-                tokens.append(token("kw", variable))
+            if variable.lower() in ["true", "false"]:
+                tokens.append(token("kw", variable.lower()))
             else:
                 tokens.append(token("var",variable))
         elif curr_char.isdigit():
@@ -229,8 +229,8 @@ def infix_to_postfix(tokens) :
         '%': (3, 'left'), 
         '^': (4, 'right'), 
         'unary-': (5, 'non'), 
-        '++': (5, 'non'), 
-        '--': (5, 'non'),
+        '++': (6, 'non'), 
+        '--': (6, 'non'),
         '~': (5, 'non')
     }
     tokens = handle_unary_negation(tokens, operators)
@@ -241,6 +241,11 @@ def infix_to_postfix(tokens) :
         if curr_token.typ == "val":
             curr_token.val = float(curr_token.val)
             postfix.append(curr_token)
+        elif curr_token.typ == "kw":
+            if curr_token.val == "true":
+                operator_stack.append(token("val",float(1)))
+            else:
+                operator_stack.append(token("val",float(0)))
         elif curr_token.typ == "var":
             if last_token and last_token.val in ["++" , "--"]:
                 postfix[-1] = token("pre"+last_token.val,curr_token)
