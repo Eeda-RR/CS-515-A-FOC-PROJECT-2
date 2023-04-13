@@ -188,7 +188,6 @@ def parse_program(lines):
 
 def evaluate_program(statements):
     variables_map = {}
-    results = []
     for statement in statements:
         if isinstance(statement, PrintStatement):
             expressions = statement.expressions
@@ -199,14 +198,12 @@ def evaluate_program(statements):
                     output.append(result)
             except ZeroDivisionError:
                 output.append("divide by zero")
-            results.append(output)
+            print(*output, sep=" ")
         else:
             try:
                 result, variables_map = evaluate_expression(statement.expression, variables_map)
             except ZeroDivisionError:
-                results.append(["divide by zero"])
-    for item in results:
-        print(*item, sep=" ")
+                print("divide by zero")
                 
                 
 
