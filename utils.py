@@ -333,16 +333,13 @@ def evaluate_expression(expression, variables_map) :
             left_operand = operator_stack.pop()
             if left_operand.typ != "var":
                 raise_parse_error()
-            if right_operand.typ == "var":
-                result = variables_map[right_operand.val]
-            else:
-                result = right_operand.val
+            result = variables_map[right_operand.val] if right_operand.typ == "var" else right_operand.val
             variables_map[left_operand.val] = result
             operator_stack.append(token("val",result))
         else:
-            raise_parse_error()
+            raise ValueError('Invalid token: {}'.format(curr_token))
     if len(operator_stack) != 1:
-        raise raise_parse_error()
+        raise ValueError('Invalid expression: {}'.format(expression))
     if operator_stack[0].typ == "var":
         return variables_map[operator_stack[0].val], variables_map
     return operator_stack[0].val, variables_map
