@@ -313,9 +313,8 @@ def evaluate_expression(expression, variables_map) :
             result = evaluate_unary_operation(operand, curr_token, variables_map)
             operator_stack.append(token("val",result))
         elif curr_token.val in ('++', '--'):
-            # if not( is_variable(expression[i-1]) or is_variable(expression[i+1])):
-            #     raise ValueError('Operator {} not followed or prefixed by variable'.format(token))
-            #post inc/ dec
+            if len(operator_stack) < 1 or operator_stack[-1].typ != "var":
+                raise_parse_error()
             operand = operator_stack.pop()
             operator_stack.append(token("val",variables_map[operand.val]))
             result = evaluate_unary_operation(operand, curr_token,variables_map)
@@ -377,6 +376,6 @@ def evaluate_unary_operation(operand, operator,variables_map) -> float:
     elif operator.val == '--':
         return value - 1
     elif operator.val == 'unary-':
-        return  value*(-1)
+        return  float(0.0) if value == 0 else value*(-1)
     else:
         raise ValueError('Invalid operator: {}'.format(operator))
