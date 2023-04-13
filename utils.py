@@ -192,12 +192,12 @@ def evaluate_program(statements):
         if isinstance(statement, PrintStatement):
             expressions = statement.expressions
             output = []
-            try:
-                for expression in expressions:
+            for expression in expressions:
+                try:
                     result , variables_map = evaluate_expression(expression, variables_map)
                     output.append(result)
-            except ZeroDivisionError:
-                output.append("divide by zero")
+                except ZeroDivisionError:
+                    output.append("divide by zero")
             print(*output, sep=" ")
         else:
             try:
@@ -292,7 +292,7 @@ def infix_to_postfix(tokens) :
         postfix.append(operator)
     return postfix
 
-def evaluate_expression(expression, variables_map) :
+def evaluate_expression(expression, variables_map):
     operator_stack = []
     for i, curr_token in enumerate(expression):
         if curr_token.typ == "val":
