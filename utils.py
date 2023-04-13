@@ -334,7 +334,7 @@ def evaluate_expression(expression, variables_map) :
     if len(operator_stack) != 1:
         raise_parse_error()
     if operator_stack[0].typ == "var":
-        return variables_map[operator_stack[0].val], variables_map
+        return variables_map.get(operator_stack[0].val, float(0.0)), variables_map
     return operator_stack[0].val, variables_map
 
 def evaluate_binary_operation(left_operand, right_operand, operator,variables_map) -> float:
