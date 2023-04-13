@@ -251,7 +251,7 @@ def infix_to_postfix(tokens) :
             operator_stack.append(curr_token)
         elif curr_token.typ == "sym" and curr_token.val in ['++',  '--']:
             if curr_token.val in ['++', '--']:
-                if (last_token and last_token.typ == "var") or (i + 1 < len(tokens) and tokens[i].typ == "var")
+                if not((last_token and last_token.typ == "var") or (i + 1 < len(tokens) and tokens[i + 1].typ == "var")):
                     raise_parse_error()
                 postfix.append(curr_token)
             else:

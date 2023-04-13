@@ -3,12 +3,14 @@ from utils import parse_program,evaluate_program
 def top_level_parser():
     lines = []
     while True:
-        user_input = input()
-        # if user pressed Enter without a value, break out of loop
-        if user_input == '':
+        try:
+            user_input = input()
+            if(user_input):
+                lines.append(user_input)
+        except KeyboardInterrupt:
             break
-        else:
-            lines.append(user_input)
+        except EOFError:
+            break
     return lines
     
 
