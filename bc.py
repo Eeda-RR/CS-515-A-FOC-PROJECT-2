@@ -18,7 +18,6 @@ def main():
     statements = top_level_parser()
     parsed_statements = parse_program(statements)
     evaluate_program(parsed_statements)
-    
     return
 
 if __name__=="__main__":
