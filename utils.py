@@ -198,8 +198,6 @@ def evaluate_program(statements):
                     output.append(result)
             except ZeroDivisionError:
                 output.append("divide by zero")
-                print(*output, sep=" ")
-                sys.exit(1)
             print(*output, sep=" ")
         else:
             try:
@@ -230,8 +228,8 @@ def infix_to_postfix(tokens) :
         '%': (3, 'left'), 
         '^': (4, 'right'), 
         'unary-': (5, 'non'), 
-        '++': (6, 'non'), 
-        '--': (6, 'non'),
+        '++': (5, 'non'), 
+        '--': (5, 'non'),
         '~': (5, 'non')
     }
     tokens = handle_unary_negation(tokens, operators)
@@ -314,9 +312,10 @@ def evaluate_expression(expression, variables_map) :
             result = evaluate_unary_operation(operand, curr_token, variables_map)
             operator_stack.append(token("val",result))
         elif curr_token.val in ('++', '--'):
+            # if not( is_variable(expression[i-1]) or is_variable(expression[i+1])):
+            #     raise ValueError('Operator {} not followed or prefixed by variable'.format(token))
+            #post inc/ dec
             operand = operator_stack.pop()
-            if operand.typ != "var":
-                raise_parse_error()
             operator_stack.append(token("val",variables_map[operand.val]))
             result = evaluate_unary_operation(operand, curr_token,variables_map)
             variables_map[operand.val] = result
@@ -333,9 +332,8 @@ def evaluate_expression(expression, variables_map) :
             left_operand = operator_stack.pop()
             if left_operand.typ != "var":
                 raise_parse_error()
-            result = variables_map[right_operand.val] if right_operand.typ == "var" else right_operand.val
-            variables_map[left_operand.val] = result
-            operator_stack.append(token("val",result))
+            variables_map[left_operand.val] = right_operand.val
+            operator_stack.append(right_operand)
         else:
             raise ValueError('Invalid token: {}'.format(curr_token))
     if len(operator_stack) != 1:
