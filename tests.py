@@ -94,6 +94,10 @@ def calculate(statements):
     >>> calculate(statements)
     1.0 1.0 1.0
 
+    >>> statements = ["x = 1" ,"y = 5", "y -= x--","print x, y"]
+    >>> calculate(statements)
+    0.0 4.0
+
     
 
 
