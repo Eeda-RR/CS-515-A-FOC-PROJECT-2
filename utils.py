@@ -201,6 +201,8 @@ def evaluate_program(statements):
                     output.append(result)
             except ZeroDivisionError:
                 output.append("divide by zero")
+                results.append(output)
+                break
             except:
                 raise_parse_error()
             results.append(output)
@@ -210,6 +212,7 @@ def evaluate_program(statements):
                 results.append([result])
             except ZeroDivisionError:
                 results.append(["divide by zero"])
+                break
             except:
                 raise_parse_error()
     for item in results:
