@@ -86,6 +86,18 @@ def calculate(statements):
     >>> calculate(statements)
     1.0
 
+    >>> statements = ["x = 5"," x += ++x", "print x"]
+    >>> calculate(statements)
+    11.0
+
+    >>> statements = ["x = y = z = 1","print x, y, z"]
+    >>> calculate(statements)
+    1.0 1.0 1.0
+
+    
+
+
+
 
 
     """

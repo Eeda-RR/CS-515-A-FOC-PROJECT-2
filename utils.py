@@ -76,6 +76,9 @@ def lex(input_string):
                 raise_parse_error()
             else:
                 tokens.append(token("val",float(number)))
+        elif curr_char in ('+', '-', '*', '/', '%', '^') and curr_index+1 < len(input_string) and input_string[curr_index+1] == "=":
+            tokens.append(token("ext1", curr_char))
+            curr_index += 2
         elif curr_char == "+":
             curr_index += 1
             if curr_index < len(input_string):
@@ -223,6 +226,21 @@ def handle_unary_negation(tokens, operators):
                 tokens[i] = token("sym", "unary-")
     return tokens
 
+def handle_ext1(tokens, operators):
+    i = 0
+    while i < len(tokens):
+        curr_token = tokens[i]
+        if curr_token.typ == "ext1" :
+            if i == 0 or tokens[i-1].typ != "var":
+                raise_parse_error() 
+            tokens[i] = token("sym","=")
+            tokens.insert(i +  1, tokens[i-1])
+            tokens.insert(i + 2, token("sym", curr_token.val))
+            i += 3
+        else:
+            i += 1
+    return tokens
+
 
 def infix_to_postfix(tokens) :
     operators = {
@@ -239,6 +257,7 @@ def infix_to_postfix(tokens) :
         '~': (5, 'non')
     }
     tokens = handle_unary_negation(tokens, operators)
+    tokens = handle_ext1(tokens, operators)
     postfix = []
     operator_stack = []
     last_token = None
@@ -266,10 +285,10 @@ def infix_to_postfix(tokens) :
             if not operator_stack:
                 raise_parse_error()
             operator_stack.pop()
-        elif curr_token.typ == "sym" and curr_token.val == '=':
-            while operator_stack and operator_stack[-1].val != '(':
-                postfix.append(operator_stack.pop())
-            operator_stack.append(curr_token)
+        # elif curr_token.typ == "sym" and curr_token.val == '=':
+        #     while operator_stack and operator_stack[-1].val != '(':
+        #         postfix.append(operator_stack.pop())
+        #     operator_stack.append(curr_token)
         elif curr_token.typ == "sym" and curr_token.val in ['++',  '--']:
             if curr_token.val in ['++', '--']:
                 if not((last_token and last_token.typ == "var") or (i + 1 < len(tokens) and tokens[i + 1].typ == "var")):
@@ -304,8 +323,12 @@ def evaluate_expression(expression, variables_map):
             operator_stack.append(curr_token)
         elif curr_token.typ == "var":
             if curr_token.val not in variables_map:
-              variables_map[curr_token.val] = float(0.0)
-            operator_stack.append(curr_token)
+                variables_map[curr_token.val] = float(0.0)
+            if (i + 1 <= len(expression) and expression[-1-i].val == "=") or (i +1<len(expression) and expression[i+1].typ in ("POST" ,"PRE")):
+                operator_stack.append(curr_token)
+            else:
+                operator_stack.append(token("val",variables_map[curr_token.val]))
+            
         elif curr_token.val in ('+', '-', '*', '/', '%', '^'):
             if len(operator_stack) < 2:
                 raise_parse_error()
@@ -342,6 +365,9 @@ def evaluate_expression(expression, variables_map):
             else:
                 variables_map[left_operand.val] = right_operand.val
             operator_stack.append(right_operand)
+        
+            
+
         else:
             raise_parse_error()
     if len(operator_stack) != 1:
