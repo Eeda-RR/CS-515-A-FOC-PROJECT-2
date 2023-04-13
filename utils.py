@@ -193,18 +193,16 @@ def evaluate_program(statements):
         if isinstance(statement, PrintStatement):
             expressions = statement.expressions
             output = []
-            
-            for expression in expressions:
-                try:
+            try:
+                for expression in expressions:
                     result , variables_map = evaluate_expression(expression, variables_map)
                     output.append(result)
-                except ZeroDivisionError:
-                    output.append("divide by zero")
+            except ZeroDivisionError:
+                output.append("divide by zero")
             results.append(output)
         else:
             try:
                 result, variables_map = evaluate_expression(statement.expression, variables_map)
-                results.append(result)
             except ZeroDivisionError:
                 results.append(["divide by zero"])
     for item in results:
