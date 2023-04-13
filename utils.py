@@ -210,6 +210,15 @@ def raise_parse_error():
   print("parse error")
   sys.exit(1)             
 
+def handle_unary_negation(tokens, operators):
+    for i, curr_token in enumerate(tokens):
+        if curr_token.typ == "sym" and curr_token.val == "-":
+            if i == 0 or tokens[i-1].val == "(" or (tokens[i-1].val in operators and tokens[i-1].val not in ["++","--"]):
+                tokens.insert(i,token("sym", "("))
+                tokens.insert(i + 1, token("val", float(0.0)))
+                tokens.insert(i + 4, token("sym", ")"))
+    return tokens
+
 
 def infix_to_postfix(tokens) :
     operators = {
@@ -225,6 +234,7 @@ def infix_to_postfix(tokens) :
         '--': (5, 'non'),
         '~': (5, 'non')
     }
+    tokens = handle_unary_negation(tokens, operators)
     postfix = []
     operator_stack = []
     last_token = None
