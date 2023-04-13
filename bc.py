@@ -1,4 +1,4 @@
-from utils import parse_program,evaluate_program, raise_parse_error
+from utils import parse_program,evaluate_program
 
 def top_level_parser():
     lines = []
@@ -16,11 +16,9 @@ def top_level_parser():
 
 def main():
     statements = top_level_parser()
-    try:
-        parsed_statements = parse_program(statements)
-        evaluate_program(parsed_statements)
-    except:
-        raise_parse_error()
+    parsed_statements = parse_program(statements)
+    evaluate_program(parsed_statements)
+    
     return
 
 if __name__=="__main__":
