@@ -82,6 +82,11 @@ def calculate(statements):
     >>> calculate(statements)
     0.0 divide by zero 1.0
 
+    >>> statements = ["print++","print print"]
+    >>> calculate(statements)
+    1.0
+
+
 
     """
     parsed_statements = parse_program(statements)

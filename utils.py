@@ -55,13 +55,18 @@ def lex(input_string):
             curr_index += 1
         elif curr_char.isalpha():
             variable = ""
+            start_index = curr_index
             while curr_index < len(input_string) and (input_string[curr_index].isalnum() or input_string[curr_index] == "_"):
                 variable += input_string[curr_index]
                 curr_index += 1
             if variable.lower() in ["true", "false"]:
                 tokens.append(token("kw", variable.lower()))
             else:
-                tokens.append(token("var",variable))
+                if start_index == 0 and curr_index < len(input_string) and input_string[curr_index] == " " and variable == "print":
+                    tokens.append(token("print",variable))
+                    curr_index += 1
+                else:
+                    tokens.append(token("var",variable))
         elif curr_char.isdigit():
             number = ''
             while curr_index < len(input_string) and (input_string[curr_index].isdigit() or input_string[curr_index] == "."):
@@ -152,7 +157,7 @@ def parse(statements):
     parsed_statements = []
     for line , statement in enumerate(statements):
         tokens = lex(statement)
-        if len(tokens) and tokens[0].typ == "var" and tokens[0].val == "print":
+        if len(tokens) and tokens[0].typ == "print" and tokens[0].val == "print":
             expressions = []
             index = 1
             expression = []
