@@ -376,6 +376,6 @@ def evaluate_unary_operation(operand, operator,variables_map) -> float:
     elif operator.val == '--':
         return value - 1
     elif operator.val == 'unary-':
-        return  (-1)*value
+        return  value*(-1)
     else:
         raise ValueError('Invalid operator: {}'.format(operator))
