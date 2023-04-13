@@ -316,6 +316,8 @@ def evaluate_expression(expression, variables_map) :
             variables_map[operand.val] = result
         elif curr_token.typ in ("pre++", "pre--"):
             operand = curr_token.val
+            if operand.typ == "var" and operand.val not in variables_map:
+                variables_map[operand.val] = float(0.0)
             result = evaluate_unary_operation(operand,token("sym",curr_token.typ[3:]),variables_map)
             operator_stack.append(token("val",result))
             variables_map[operand.val] = result
@@ -367,9 +369,9 @@ def evaluate_unary_operation(operand, operator,variables_map) -> float:
     if operand.typ == "var":
       value = variables_map[operand.val]
     if operator.val == '++':
-        return value + 1
+        return value + float(1.0)
     elif operator.val == '--':
-        return value - 1
+        return value - float(1.0)
     elif operator.val == 'unary-':
         return  float(0.0) if value == 0 else value*(-1)
     else:
