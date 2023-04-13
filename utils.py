@@ -329,7 +329,11 @@ def evaluate_expression(expression, variables_map) :
             left_operand = operator_stack.pop()
             if left_operand.typ != "var":
                 raise_parse_error()
-            variables_map[left_operand.val] = right_operand.val
+
+            if right_operand.typ == "var":
+                variables_map[left_operand.val] = variables_map[right_operand.val]
+            else:
+                variables_map[left_operand.val] = right_operand.val
             operator_stack.append(right_operand)
         else:
             raise_parse_error()
