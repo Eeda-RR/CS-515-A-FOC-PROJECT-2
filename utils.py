@@ -165,6 +165,8 @@ def parse(statements):
                 index += 1
             if len(expression) > 0:
                 expressions.append(infix_to_postfix(expression))
+            else:
+                raise_parse_error()
             if len(expressions) == 0:
                 raise_parse_error()     
             parsed_statements.append(PrintStatement(line, expressions)) 
@@ -188,6 +190,7 @@ def parse_program(lines):
 
 def evaluate_program(statements):
     variables_map = {}
+    results = []
     for statement in statements:
         if isinstance(statement, PrintStatement):
             expressions = statement.expressions
@@ -198,12 +201,19 @@ def evaluate_program(statements):
                     output.append(result)
             except ZeroDivisionError:
                 output.append("divide by zero")
+            except:
+                raise_parse_error()
             print(*output, sep=" ")
         else:
             try:
                 result, variables_map = evaluate_expression(statement.expression, variables_map)
+                results.append([result])
             except ZeroDivisionError:
                 print("divide by zero")
+            except:
+                raise_parse_error()
+    for item in results:
+        print(*item, sep=" ")
                 
 
 def raise_parse_error():
