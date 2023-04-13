@@ -200,7 +200,7 @@ def evaluate_program(statements):
                     result , variables_map = evaluate_expression(expression, variables_map)
                     output.append(result)
             except ZeroDivisionError:
-                output.append("divide by zero")
+                results.append(["divide by zero"])
             except:
                 raise_parse_error()
             print(*output, sep=" ")
@@ -209,7 +209,7 @@ def evaluate_program(statements):
                 result, variables_map = evaluate_expression(statement.expression, variables_map)
                 results.append([result])
             except ZeroDivisionError:
-                print("divide by zero")
+                results.append(["divide by zero"])
             except:
                 raise_parse_error()
     for item in results:
