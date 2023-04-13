@@ -230,8 +230,8 @@ def infix_to_postfix(tokens) :
         '%': (3, 'left'), 
         '^': (4, 'right'), 
         'unary-': (5, 'non'), 
-        '++': (5, 'non'), 
-        '--': (5, 'non'),
+        '++': (6, 'non'), 
+        '--': (6, 'non'),
         '~': (5, 'non')
     }
     tokens = handle_unary_negation(tokens, operators)
@@ -330,10 +330,12 @@ def evaluate_expression(expression, variables_map) :
                 raise ValueError('Not enough operands for operator {}'.format(curr_token))
             right_operand = operator_stack.pop()
             left_operand = operator_stack.pop()
-            if left_operand.typ != "var":
-                raise ValueError('Left operand of assignment operator must be a variable')
-            variables_map[left_operand.val] = right_operand.val
-            operator_stack.append(token("val",right_operand.val))
+            if right_operand.typ == "var":
+                result = variables_map[right_operand.val]
+            else:
+                result = right_operand.val
+            variables_map[left_operand.val] = result
+            operator_stack.append(token("val",result))
         else:
             raise ValueError('Invalid token: {}'.format(curr_token))
     if len(operator_stack) != 1:
