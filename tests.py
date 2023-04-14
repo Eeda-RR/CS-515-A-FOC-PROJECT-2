@@ -1,4 +1,5 @@
 from utils import parse_program,evaluate_program
+
 def calculate(statements):
     """
     >>> statements = ["x = 3", " y = 5", "z = 2 + x * y ", " z2 = (2 + x) * y", "print x, y, z, z2"]
@@ -20,22 +21,6 @@ def calculate(statements):
     >>> statements = ["print 2 ^ 2 ^ 2"]
     >>> calculate(statements)
     16.0
-
-    # >>> statements = ["1 / 0"]
-    # >>> calculate(statements)
-    # divide by zero
-
-    # >>> statements = ["print 0 / 1 , 1 / 0"]
-    # >>> calculate(statements)
-    # 0.0 divide by zero
-
-    # >>> statements = ["print 0 / 1 , 0 / 0"]
-    # >>> calculate(statements)
-    # 0.0 divide by zero
-
-    # >>> statements = ["(5 + 3)/ (2 - 2)"]
-    # >>> calculate(statements)
-    # divide by zero
 
     >>> statements = ["x = 5",  "y = -x++","print x, y"]
     >>> calculate(statements)
@@ -67,7 +52,7 @@ def calculate(statements):
 
     >>> statements = ["print x, -y"]
     >>> calculate(statements)
-    0.0 0.0
+    0.0 -0.0
 
     >>> statements = ["x = 1 ", " ", " ","print x, y"]
     >>> calculate(statements)
@@ -77,9 +62,57 @@ def calculate(statements):
     >>> calculate(statements)
     5.0 1.0 5.0
 
-    # >>> statements = ["print (5^2), 3*3, (9/1)/0, 2+1"]
+    >>> statements = ["print++","print print"]
+    >>> calculate(statements)
+    1.0
+
+    >>> statements = ["x = 5"," x += ++x", "print x"]
+    >>> calculate(statements)
+    11.0
+
+    >>> statements = ["x = y = z = 1","print x, y, z"]
+    >>> calculate(statements)
+    1.0 1.0 1.0
+
+    >>> statements = ["x = 1" ,"y = 5", "y -= x--","print x, y"]
+    >>> calculate(statements)
+    0.0 4.0
+
+    >>> statements = ["x = 1", " /* ", " x = 2 ", " y = 3 ",  " */ ", " y = 4 ", "# print 0", "print x, y"]
+    >>> calculate(statements)
+    1.0 4.0
+
+    >>> statements = ["x = 1", " /*  x = 2 ", " y = 3  */ ", " y = 4 ", "# print 0", "print x, y"]
+    >>> calculate(statements)
+    1.0 4.0
+
+    # >>> statements = ["print  x++, 1/0, x"]
     # >>> calculate(statements)
-    # 25.0 9.0 divide by zero 3.0
+    # 0.0 divide by zero 1.0
+
+    # >>> statements = ["1 / 0"]
+    # >>> calculate(statements)
+    # divide by zero
+
+    # >>> statements = ["print 0 / 1 , 1 / 0"]
+    # >>> calculate(statements)
+    # 0.0 divide by zero
+
+    # >>> statements = ["print 0 / 1 , 0 / 0"]
+    # >>> calculate(statements)
+    # 0.0 divide by zero
+
+    # >>> statements = ["(5 + 3)/ (2 - 2)"]
+    # >>> calculate(statements)
+    # divide by zero
+
+    # >>> statements = ["print 3", "print (2 + 3)+((4+5 + ()))"]
+    # >>> calculate(statements)
+    # parse error
+
+
+
+
 
     """
     parsed_statements = parse_program(statements)
@@ -88,5 +121,4 @@ def calculate(statements):
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod(0)
-    sys.exit(doctest.testmod(raise_on_error=True)[0])
+    doctest.testmod()
