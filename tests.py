@@ -52,7 +52,7 @@ def calculate(statements):
 
     >>> statements = ["print x, -y"]
     >>> calculate(statements)
-    0.0 0.0
+    0.0 -0.0
 
     >>> statements = ["x = 1 ", " ", " ","print x, y"]
     >>> calculate(statements)

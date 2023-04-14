@@ -368,9 +368,6 @@ def evaluate_expression(expression, variables_map):
             else:
                 variables_map[left_operand.val] = right_operand.val
             operator_stack.append(right_operand)
-        
-            
-
         else:
             raise_parse_error()
     if len(operator_stack) != 1:
@@ -413,6 +410,6 @@ def evaluate_unary_operation(operand, operator,variables_map) -> float:
     elif operator.val == '--':
         return value - float(1.0)
     elif operator.val == 'unary-':
-        return  float(0.0) if value == 0 else value*(-1)
+        return (-1)* value
     else:
         raise ValueError('Invalid operator: {}'.format(operator))
