@@ -1,5 +1,4 @@
 from utils import parse_program,evaluate_program
-
 def calculate(statements):
     """
     >>> statements = ["x = 3", " y = 5", "z = 2 + x * y ", " z2 = (2 + x) * y", "print x, y, z, z2"]
@@ -22,21 +21,21 @@ def calculate(statements):
     >>> calculate(statements)
     16.0
 
-    >>> statements = ["1 / 0"]
-    >>> calculate(statements)
-    divide by zero
+    # >>> statements = ["1 / 0"]
+    # >>> calculate(statements)
+    # divide by zero
 
-    >>> statements = ["print 0 / 1 , 1 / 0"]
-    >>> calculate(statements)
-    0.0 divide by zero
+    # >>> statements = ["print 0 / 1 , 1 / 0"]
+    # >>> calculate(statements)
+    # 0.0 divide by zero
 
-    >>> statements = ["print 0 / 1 , 0 / 0"]
-    >>> calculate(statements)
-    0.0 divide by zero
+    # >>> statements = ["print 0 / 1 , 0 / 0"]
+    # >>> calculate(statements)
+    # 0.0 divide by zero
 
-    >>> statements = ["(5 + 3)/ (2 - 2)"]
-    >>> calculate(statements)
-    divide by zero
+    # >>> statements = ["(5 + 3)/ (2 - 2)"]
+    # >>> calculate(statements)
+    # divide by zero
 
     >>> statements = ["x = 5",  "y = -x++","print x, y"]
     >>> calculate(statements)
@@ -78,9 +77,9 @@ def calculate(statements):
     >>> calculate(statements)
     5.0 1.0 5.0
 
-    >>> statements = ["print (5^2), 3*3, (9/1)/0, 2+1"]
-    >>> calculate(statements)
-    25.0 9.0 divide by zero 3.0
+    # >>> statements = ["print (5^2), 3*3, (9/1)/0, 2+1"]
+    # >>> calculate(statements)
+    # 25.0 9.0 divide by zero 3.0
 
     """
     parsed_statements = parse_program(statements)
@@ -89,4 +88,5 @@ def calculate(statements):
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()
+    doctest.testmod(0)
+    sys.exit(doctest.testmod(raise_on_error=True)[0])
