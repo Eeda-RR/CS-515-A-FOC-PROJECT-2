@@ -78,6 +78,14 @@ def calculate(statements):
     >>> calculate(statements)
     0.0 4.0
 
+    >>> statements = ["x = 1", " /* ", " x = 2 ", " y = 3 ",  " */ ", " y = 4 ", "# print 0", "print x, y"]
+    >>> calculate(statements)
+    1.0 4.0
+
+    >>> statements = ["x = 1", " /*  x = 2 ", " y = 3  */ ", " y = 4 ", "# print 0", "print x, y"]
+    >>> calculate(statements)
+    1.0 4.0
+
     # >>> statements = ["print  x++, 1/0, x"]
     # >>> calculate(statements)
     # 0.0 divide by zero 1.0

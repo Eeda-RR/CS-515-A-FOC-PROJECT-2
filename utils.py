@@ -44,15 +44,31 @@ class ExpressionStatement(Statement):
     def __repr__(self):
         return f'ExpressionStatement({self.expression!r})'
 
+def check_for_comment_end(input_string):
+    if re.sub(re.compile(r'\s+'),'',input_string)[-2:] == "*/":
+        return [token("comment", "multi-end")]
+    else:
+        return []
 
 
-def lex(input_string):
+
+def lex(input_string, is_comment_start_found):
     tokens = []
     curr_index = 0
+    input_string = input_string.strip()
+    if is_comment_start_found:
+        return check_for_comment_end(input_string)
+
     while curr_index < len(input_string):
         curr_char = input_string[curr_index]
         if curr_char.isspace():
             curr_index += 1
+        elif curr_char == "#" and curr_index == 0:
+            tokens.append(token("comment", "line"))
+            return tokens
+        elif curr_char == "/" and curr_index == 0 and re.sub(re.compile(r'\s+'),'',input_string)[0:2] == "/*":
+            tokens.append(token("comment", "multi-start"))
+            return tokens
         elif curr_char.isalpha():
             variable = ""
             start_index = curr_index
@@ -158,8 +174,9 @@ def lex(input_string):
         
 def parse(statements):
     parsed_statements = []
+    is_comment_start_found = False
     for line , statement in enumerate(statements):
-        tokens = lex(statement)
+        tokens = lex(statement, is_comment_start_found)
         if len(tokens) and tokens[0].typ == "print" and tokens[0].val == "print":
             expressions = []
             index = 1
@@ -176,6 +193,13 @@ def parse(statements):
             if len(expressions) == 0:
                 raise_parse_error()     
             parsed_statements.append(PrintStatement(line, expressions)) 
+        elif len(tokens) and tokens[0].typ == "comment":
+            if tokens[0].val == "multi-start":
+                is_comment_start_found = True
+            elif tokens[0].val == "multi-end" and not is_comment_start_found:
+                raise_parse_error()
+            elif tokens[0].val == "multi-end":
+                is_comment_start_found = False
         elif len(tokens) >= 2 and tokens[0].typ == "var" and tokens[1].typ == "sym" and tokens[1].val == "=":
             if len(tokens) > 2:
                 variable_name = tokens[0]
@@ -184,6 +208,8 @@ def parse(statements):
                 raise_parse_error()
         elif len(tokens) > 0:
             parsed_statements.append(ExpressionStatement(line, infix_to_postfix(tokens)))
+    if is_comment_start_found:
+        raise_parse_error()
     return parsed_statements
 
 
