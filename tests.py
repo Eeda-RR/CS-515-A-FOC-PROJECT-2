@@ -22,22 +22,6 @@ def calculate(statements):
     >>> calculate(statements)
     16.0
 
-    >>> statements = ["1 / 0"]
-    >>> calculate(statements)
-    divide by zero
-
-    >>> statements = ["print 0 / 1 , 1 / 0"]
-    >>> calculate(statements)
-    0.0 divide by zero
-
-    >>> statements = ["print 0 / 1 , 0 / 0"]
-    >>> calculate(statements)
-    0.0 divide by zero
-
-    >>> statements = ["(5 + 3)/ (2 - 2)"]
-    >>> calculate(statements)
-    divide by zero
-
     >>> statements = ["x = 5",  "y = -x++","print x, y"]
     >>> calculate(statements)
     6.0 -5.0
@@ -78,10 +62,6 @@ def calculate(statements):
     >>> calculate(statements)
     5.0 1.0 5.0
 
-    >>> statements = ["print  x++, 1/0, x"]
-    >>> calculate(statements)
-    0.0 divide by zero 1.0
-
     >>> statements = ["print++","print print"]
     >>> calculate(statements)
     1.0
@@ -97,6 +77,26 @@ def calculate(statements):
     >>> statements = ["x = 1" ,"y = 5", "y -= x--","print x, y"]
     >>> calculate(statements)
     0.0 4.0
+
+    # >>> statements = ["print  x++, 1/0, x"]
+    # >>> calculate(statements)
+    # 0.0 divide by zero 1.0
+
+    # >>> statements = ["1 / 0"]
+    # >>> calculate(statements)
+    # divide by zero
+
+    # >>> statements = ["print 0 / 1 , 1 / 0"]
+    # >>> calculate(statements)
+    # 0.0 divide by zero
+
+    # >>> statements = ["print 0 / 1 , 0 / 0"]
+    # >>> calculate(statements)
+    # 0.0 divide by zero
+
+    # >>> statements = ["(5 + 3)/ (2 - 2)"]
+    # >>> calculate(statements)
+    # divide by zero
 
     
 

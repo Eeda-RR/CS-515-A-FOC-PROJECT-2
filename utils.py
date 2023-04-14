@@ -214,6 +214,7 @@ def evaluate_program(statements):
                 result, variables_map = evaluate_expression(statement.expression, variables_map)
             except ZeroDivisionError:
                 print("divide by zero")
+                sys.exit(1)
                 
                 
 
