@@ -257,7 +257,6 @@ def infix_to_postfix(tokens) :
         'unary-': (5, 'non'), 
         '++': (6, 'non'), 
         '--': (6, 'non'),
-        '~': (5, 'non')
     }
     tokens = handle_unary_negation(tokens, operators)
     tokens = handle_ext1(tokens, operators)
