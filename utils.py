@@ -103,37 +103,37 @@ def lex(input_string):
             tokens.append(token("sym","*"))
             curr_index += 1
             if curr_index >= len(input_string):
-                raise_parse_error
+                raise_parse_error()
         elif curr_char == "/":
             tokens.append(token("sym","/"))
             curr_index += 1
             if curr_index >= len(input_string):
-                raise_parse_error
+                raise_parse_error()
         elif curr_char == "%":
             tokens.append(token("sym","%"))
             curr_index += 1
             if curr_index >= len(input_string):
-                raise_parse_error
+                raise_parse_error()
         elif curr_char == "^":
             tokens.append(token("sym","^"))
             curr_index += 1
             if curr_index >= len(input_string):
-                raise_parse_error
+                raise_parse_error()
         elif curr_char == "=":
             tokens.append(token("sym","="))
             curr_index += 1
             if curr_index >= len(input_string):
-                raise_parse_error
+                raise_parse_error()
         elif curr_char == "(":
             tokens.append(token("sym","("))
             curr_index += 1
             if curr_index >= len(input_string):
-                raise_parse_error
+                raise_parse_error()
         elif curr_char == ")":
             tokens.append(token("sym",")"))
             curr_index += 1
             if curr_index == 1:
-                raise_parse_error
+                raise_parse_error()
         elif curr_char == ",":
             tokens.append(token("comma",","))
             curr_index += 1
@@ -141,17 +141,17 @@ def lex(input_string):
             tokens.append(token("sym","||"))
             curr_index += 2
             if curr_index >= len(input_string):
-                raise_parse_error
+                raise_parse_error()
         elif curr_char == "!":
             tokens.append(token("sym","!"))
             curr_index += 1
             if curr_index >= len(input_string):
-                raise_parse_error
+                raise_parse_error()
         elif curr_index + 1< len(input_string) and input_string[curr_index:curr_index+2] == "&&":
             tokens.append(token("sym","&&"))
             curr_index += 2
             if curr_index >= len(input_string):
-                raise_parse_error
+                raise_parse_error()
         else:
             raise_parse_error()
     return tokens
@@ -196,6 +196,7 @@ def parse_program(lines):
 
 def evaluate_program(statements):
     variables_map = {}
+    results = []
     for statement in statements:
         if isinstance(statement, PrintStatement):
             expressions = statement.expressions
@@ -206,16 +207,25 @@ def evaluate_program(statements):
                     output.append(result)
                 except ZeroDivisionError:
                     output.append("divide by zero")
-                    print(*output, sep=" ")
+                    results.append(output)
+                    print_program_result(results)
                     sys.exit(1)
-            print(*output, sep=" ")
+            results.append(output)
         else:
             try:
                 result, variables_map = evaluate_expression(statement.expression, variables_map)
             except ZeroDivisionError:
-                print("divide by zero")
+                results.append(["divide by zero"])
+                print_program_result(results)
                 sys.exit(1)
-                
+    print_program_result(results)
+    return
+
+
+def print_program_result(results):
+    for item in results:
+        print(*item, sep = ' ')     
+    return          
                 
 
 def raise_parse_error():

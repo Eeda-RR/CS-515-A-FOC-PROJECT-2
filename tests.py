@@ -98,7 +98,9 @@ def calculate(statements):
     # >>> calculate(statements)
     # divide by zero
 
-    
+    # >>> statements = ["print 3", "print (2 + 3)+((4+5 + ()))"]
+    # >>> calculate(statements)
+    # parse error
 
 
 
