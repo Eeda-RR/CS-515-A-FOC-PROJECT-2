@@ -206,6 +206,8 @@ def evaluate_program(statements):
                     output.append(result)
                 except ZeroDivisionError:
                     output.append("divide by zero")
+                    print(*output, sep=" ")
+                    sys.exit(1)
             print(*output, sep=" ")
         else:
             try:
