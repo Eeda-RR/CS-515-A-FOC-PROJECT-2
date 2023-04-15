@@ -92,7 +92,7 @@ def lex(input_string, is_comment_start_found):
                 raise_parse_error()
             else:
                 tokens.append(token("val",float(number)))
-        elif curr_char in ('+', '-', '*', '/', '%', '^') and curr_index+1 < len(input_string) and input_string[curr_index+1] == "=":
+        elif curr_char in ('+', '-', '*', '/', '%', '^', '!') and curr_index+1 < len(input_string) and input_string[curr_index+1] == "=":
             tokens.append(token("ext1", curr_char))
             curr_index += 2
         elif curr_char == "+":
@@ -154,8 +154,12 @@ def lex(input_string, is_comment_start_found):
             tokens.append(token("comma",","))
             curr_index += 1
         elif curr_index + 1 < len(input_string) and input_string[curr_index:curr_index+2] == "||":
-            tokens.append(token("sym","||"))
-            curr_index += 2
+            if curr_index + 2 < len(input_string) and input_string[curr_index+2:curr_index+3] =='=':
+                tokens.append(token("ext1", '||'))
+                curr_index += 3
+            else:
+                tokens.append(token("sym","||"))
+                curr_index += 2
             if curr_index >= len(input_string):
                 raise_parse_error()
         elif curr_char == "!":
@@ -164,8 +168,12 @@ def lex(input_string, is_comment_start_found):
             if curr_index >= len(input_string):
                 raise_parse_error()
         elif curr_index + 1< len(input_string) and input_string[curr_index:curr_index+2] == "&&":
-            tokens.append(token("sym","&&"))
-            curr_index += 2
+            if curr_index + 2 < len(input_string) and input_string[curr_index+2:curr_index+3] =='=':
+                tokens.append(token("ext1", '&&'))
+                curr_index += 3
+            else:
+                tokens.append(token("sym","&&"))
+                curr_index += 2
             if curr_index >= len(input_string):
                 raise_parse_error()
         else:
@@ -286,6 +294,8 @@ def infix_to_postfix(tokens) :
         '=': (1, 'right'),
         '+': (2, 'left'), 
         '-': (2, 'left'), 
+        '&&': (2, 'left'),
+        '||': (2, 'left'),
         '*': (3, 'left'), 
         '/': (3, 'left'), 
         '%': (3, 'left'), 
@@ -293,6 +303,7 @@ def infix_to_postfix(tokens) :
         'unary-': (5, 'non'), 
         '++': (6, 'non'), 
         '--': (6, 'non'),
+        '!': (5, 'non')
     }
     tokens = handle_unary_negation(tokens, operators)
     tokens = handle_ext1(tokens, operators)
@@ -339,11 +350,13 @@ def infix_to_postfix(tokens) :
                 if top_token.val not in operators:
                     break
                 top_prec, top_associativity = operators[top_token.val]
+                # print(curr_token, operators[curr_token.val], top_token, operators[top_token.val])
                 if (associativity == 'left' and prec <= top_prec) or (associativity == 'right' and prec < top_prec):
                     postfix.append(operator_stack.pop())
                 else:
                     break
             operator_stack.append(curr_token)
+            # print("Stack",operator_stack)
             if i == len(tokens) - 1:
                 raise_parse_error()
         last_token = curr_token
@@ -367,14 +380,14 @@ def evaluate_expression(expression, variables_map):
             else:
                 operator_stack.append(token("val",variables_map[curr_token.val]))
             
-        elif curr_token.val in ('+', '-', '*', '/', '%', '^'):
+        elif curr_token.val in ('+', '-', '*', '/', '%', '^', '||', '&&'):
             if len(operator_stack) < 2:
                 raise_parse_error()
             right_operand = operator_stack.pop()
             left_operand = operator_stack.pop()
             result = evaluate_binary_operation(left_operand, right_operand, curr_token,variables_map)
             operator_stack.append(token("val",result))
-        elif curr_token.val == "unary-":
+        elif curr_token.val in ("unary-", '!'):
             if len(operator_stack) < 1:
                 raise_parse_error()
             operand = operator_stack.pop()
@@ -434,6 +447,10 @@ def evaluate_binary_operation(left_operand, right_operand, operator,variables_ma
         return left_value % right_value
     elif operator.val == '^':
         return pow(left_value, right_value)
+    elif operator.val == '||':
+        return int(bool(left_value) or bool(right_value))
+    elif operator.val == '&&':
+        return int(bool(left_value) and bool(right_value))
 
 
 def evaluate_unary_operation(operand, operator,variables_map) -> float:
@@ -446,5 +463,7 @@ def evaluate_unary_operation(operand, operator,variables_map) -> float:
         return value - float(1.0)
     elif operator.val == 'unary-':
         return (-1)* value
+    elif operator.val == '!':
+        return int(not bool(value))
     else:
         raise ValueError('Invalid operator: {}'.format(operator))

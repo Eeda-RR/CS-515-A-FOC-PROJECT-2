@@ -86,6 +86,22 @@ def calculate(statements):
     >>> calculate(statements)
     1.0 4.0
 
+    >>> statements = ["print 1 && 2, 2 && 1, -5 && 1, 0 && -100"]
+    >>> calculate(statements)
+    1 1 1 0
+
+    >>> statements = ["x = 1", "y = 2", "z = 0", "print x && y, x || z, x && z"]
+    >>> calculate(statements)
+    1 1 0
+
+    >>> statements = ["x = 1", "y = 2", "z = 0", "print x ||=y, x, x&&=z, x"]
+    >>> calculate(statements)
+    1 1 0 0
+
+    >>> statements = ["x = 1", "print !1, !x"]
+    >>> calculate(statements)
+    0 0
+
     # >>> statements = ["print  x++, 1/0, x"]
     # >>> calculate(statements)
     # 0.0 divide by zero 1.0
