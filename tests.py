@@ -114,25 +114,25 @@ def calculate(statements):
     >>> calculate(statements)
     1 0 1 0
 
-    # >>> statements = ["print  x++, 1/0, x"]
-    # >>> calculate(statements)
-    # 0.0 divide by zero 1.0
+    >>> statements = ["print  x++, 1/0, x"]
+    >>> calculate(statements)
+    0.0 divide by zero
 
-    # >>> statements = ["1 / 0"]
-    # >>> calculate(statements)
-    # divide by zero
+    >>> statements = ["1 / 0"]
+    >>> calculate(statements)
+    divide by zero
 
-    # >>> statements = ["print 0 / 1 , 1 / 0"]
-    # >>> calculate(statements)
-    # 0.0 divide by zero
+    >>> statements = ["print 0 / 1 , 1 / 0"]
+    >>> calculate(statements)
+    0.0 divide by zero
 
-    # >>> statements = ["print 0 / 1 , 0 / 0"]
-    # >>> calculate(statements)
-    # 0.0 divide by zero
+    >>> statements = ["print 0 / 1 , 0 / 0", "print 2"]
+    >>> calculate(statements)
+    0.0 divide by zero
 
-    # >>> statements = ["(5 + 3)/ (2 - 2)"]
-    # >>> calculate(statements)
-    # divide by zero
+    >>> statements = ["(5 + 3)/ (2 - 2)"]
+    >>> calculate(statements)
+    divide by zero
 
     # >>> statements = ["print 3", "print (2 + 3)+((4+5 + ()))"]
     # >>> calculate(statements)

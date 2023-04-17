@@ -253,6 +253,7 @@ def parse_program(lines):
 def evaluate_program(statements):
     variables_map = {}
     results = []
+    zero_by_division_error_occurred = False
     for statement in statements:
         if isinstance(statement, PrintStatement):
             expressions = statement.expressions
@@ -260,33 +261,35 @@ def evaluate_program(statements):
             for expression in expressions:
                 try:
                     result , variables_map = evaluate_expression(expression, variables_map)
-                    output.append(result)
+                    if not zero_by_division_error_occurred:
+                        output.append(result)
                 except ZeroDivisionError:
-                    output.append("divide by zero")
-                    results.append(output)
-                    print_program_result(results)
-                    sys.exit(1)
+                    if not zero_by_division_error_occurred:
+                        result = "divide by zero"
+                        output.append(result)
+                    zero_by_division_error_occurred = True
             results.append(output)
         else:
             try:
                 result, variables_map = evaluate_expression(statement.expression, variables_map)
             except ZeroDivisionError:
-                results.append(["divide by zero"])
-                print_program_result(results)
-                sys.exit(1)
+                if not zero_by_division_error_occurred:
+                    results.append(["divide by zero"])
+                zero_by_division_error_occurred = True
     print_program_result(results)
     return
 
 
 def print_program_result(results):
     for item in results:
-        print(*item, sep = ' ')     
+        if len(item) > 0:
+            print(*item, sep = ' ')     
     return          
                 
 
 def raise_parse_error():
   print("parse error")
-  sys.exit(1)             
+  sys.exit(0)             
 
 def handle_unary_negation(tokens, operators):
     for i, curr_token in enumerate(tokens):
