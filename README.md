@@ -15,7 +15,7 @@ Initially, we tested our code manually. Once we completed the baseline features,
 No
 
 ## An example of difficult issue how I resolved
-After tokenise the input, the main difficulty we faced is handling precedence of various operators. To handle it we made use of stacks and converted it from infix to postfix. And this approach helped us to have a simpler evaluation logic as we already have postfix notation which already took care of precedence.
+After tokenising the input, the main difficulty we faced is handling precedence of various operators. To handle it we made use of stacks and converted it from infix to postfix. And this approach helped us to have a simpler evaluation logic as we already have postfix notation which already took care of precedence.
 
 And also while working having the doctests helped us to know if any new piece of code that we r introducing as part of extensions or baseline functionality isn't breaking the existing logic.
 
