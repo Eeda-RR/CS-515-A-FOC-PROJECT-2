@@ -365,10 +365,6 @@ def infix_to_postfix(tokens) :
             if not operator_stack:
                 raise_parse_error()
             operator_stack.pop()
-        # elif curr_token.typ == "sym" and curr_token.val == '=':
-        #     while operator_stack and operator_stack[-1].val != '(':
-        #         postfix.append(operator_stack.pop())
-        #     operator_stack.append(curr_token)
         elif curr_token.typ == "sym" and curr_token.val in ['++',  '--']:
             if curr_token.val in ['++', '--']:
                 if not((last_token and last_token.typ == "var") or (i + 1 < len(tokens) and tokens[i + 1].typ == "var")):
@@ -468,11 +464,11 @@ def evaluate_binary_operation(left_operand, right_operand, operator,variables_ma
         return left_value * right_value
     elif operator.val == '/':
         if right_value == 0:
-            raise ZeroDivisionError('Division by zero')
+            raise ZeroDivisionError()
         return left_value / right_value
     elif operator.val == '%':
         if right_value == 0:
-            raise ZeroDivisionError('Modulo by zero')
+            raise ZeroDivisionError()
         return left_value % right_value
     elif operator.val == '^':
         return pow(left_value, right_value)
@@ -506,5 +502,4 @@ def evaluate_unary_operation(operand, operator,variables_map) -> float:
         return (-1)* value
     elif operator.val == '!':
         return int(not bool(value))
-    else:
-        raise ValueError('Invalid operator: {}'.format(operator))
+    
